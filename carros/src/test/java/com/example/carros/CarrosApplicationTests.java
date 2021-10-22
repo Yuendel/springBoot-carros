@@ -45,7 +45,8 @@ class CarrosApplicationTests {
 	}
 
 	@Test
-	void test2() {
+	void testeLista() {
+
 	}
 
 }
