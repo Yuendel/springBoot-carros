@@ -2,6 +2,7 @@ package com.example.carros.domain;
 
 import com.example.carros.domain.dto.CarroDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -46,14 +47,15 @@ public class CarroService {
         return rep.findByTipo(tipo);
     }
 
-    public Carro insert(Carro carro) {
-        return rep.save(carro);
+    public CarroDTO insert(Carro carro) {
+        Assert.isNull(carro.getId(),"Não foi possivel inserir o registro");
+        return CarroDTO.create(rep.save(carro));
     }
 
-    public Carro update(Carro carro, Long id) {
+    public CarroDTO update(Carro carro, Long id) {
         Assert.notNull(id,"Não foi possivel atualizar o registro");
 
-        Optional<Carro> optional = getCarroById2(id);
+        Optional<Carro> optional = rep.findById(id);
 
         if(optional.isPresent()){
             Carro db = optional.get();
@@ -63,22 +65,20 @@ public class CarroService {
 
             rep.save(db);
 
-            return db;
+            return CarroDTO.create(db);
         }else{
-            throw new RuntimeException("Não foi possivel atualizar o registro");
+           return null;
         }
     }
 
-    public void delete(Long id) {
-
+    public Boolean delete(Long id) {
 
         if(getCarroById(id).isPresent()) {
             rep.deleteById(id);
+            return true;
          }else{
-            throw new RuntimeException("Não foi possivel deletar o registro");
+            return false;
         }
-
-
 
     }
 }
